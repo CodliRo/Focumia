@@ -4,34 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Focumia - Focus & Tasks</title>
-    <link rel="icon" href="logo.png" type="image/png" sizes="32x32">>
+    <link rel="icon" href="logo.png" type="image/png" sizes="32x32">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css' rel='stylesheet' />
 </head>
-<body class="themed-bg-primary themed-text-primary"> 
+<body class="themed-bg-primary themed-text-primary">
     <div id="app-root">
 
         <div id="splash-screen" class="page active h-screen flex-col items-center justify-center p-4 jersey-10-regular themed-bg-primary themed-text-primary">
             <h1 class="text-8xl md:text-9xl font-bold tracking-wider">Focumia</h1>
             <p class="text-3xl md:text-4xl mt-2 tracking-wide">start - focus - finish</p>
-            <p class="text-lg md:text-xl mt-10 absolute bottom-10 opacity-70">v4.2.2 Edition</p>
+            <p class="text-lg md:text-xl mt-10 absolute bottom-10 opacity-70">v4.2.2 Enhanced Edition</p>
         </div>
 
         <div id="main-app-area" class="hidden">
             <header id="app-header" class="fixed top-0 left-0 right-0 themed-bg-primary themed-text-primary p-4 flex justify-between items-center z-50 border-b themed-border jersey-10-regular">
                 <h1 id="logo-focumia" class="text-5xl font-bold tracking-wider cursor-pointer">Focumia</h1>
                 <div class="flex items-center space-x-4">
+                    <button id="open-focus-panel-button" class="p-2 rounded-md hover:themed-bg-tertiary" title="Open Mini Timer Panel">
+                        </button>
                     <button id="theme-toggle-button" class="p-2 rounded-md hover:themed-bg-tertiary"></button>
                     <div class="relative">
                         <button id="menu-button" class="p-2 rounded-md hover:themed-bg-tertiary"></button>
                         <div id="menu-dropdown" class="hidden absolute right-0 mt-2 w-56 themed-bg-tertiary rounded-md shadow-lg py-1 z-[60] border themed-border">
                             <button data-page="home" class="menu-item block w-full text-left px-4 py-3 text-xl hover:themed-bg-secondary themed-text-primary">Home</button>
+                            <button data-page="calendar" class="menu-item block w-full text-left px-4 py-3 text-xl hover:themed-bg-secondary themed-text-primary">Calendar</button>
                             <button data-page="streaks" class="menu-item block w-full text-left px-4 py-3 text-xl hover:themed-bg-secondary themed-text-primary">Streaks</button>
+                            <button data-page="insights" class="menu-item block w-full text-left px-4 py-3 text-xl hover:themed-bg-secondary themed-text-primary">Insights</button>
                             <button data-page="settings" class="menu-item block w-full text-left px-4 py-3 text-xl hover:themed-bg-secondary themed-text-primary">Settings</button>
                             <hr class="themed-border my-1">
-                            <button id="delete-history-button" class="menu-item block w-full text-left px-4 py-3 text-xl hover:themed-bg-secondary themed-text-primary text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300">Delete All Data</button>
+                            <button id="delete-history-button" class="menu-item block w-full text-left px-4 py-3 text-xl hover:themed-bg-secondary text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300">Delete All Data</button>
                         </div>
                     </div>
                 </div>
@@ -57,7 +63,8 @@
                             <h2 id="homepage-review-title" class="text-3xl md:text-4xl themed-text-primary">Reviewing Tasks</h2>
                             <button id="close-homepage-review-button" class="themed-text-primary hover:themed-text-secondary text-4xl leading-none p-1">&times;</button>
                         </div>
-                        <div id="homepage-review-content" class="themed-text-secondary text-xl space-y-3 overflow-y-auto max-h-[40vh] md:max-h-[50vh]"></div>
+                        <div id="homepage-review-content" class="themed-text-secondary text-xl space-y-3 overflow-y-auto max-h-[40vh] md:max-h-[50vh]">
+                            </div>
                     </div>
                     <div id="task-list-section" class="themed-bg-tertiary p-6 md:p-8 rounded-lg shadow-2xl w-full max-w-2xl mx-auto mt-12 jersey-10-regular">
                         <div class="flex justify-between items-baseline mb-6">
@@ -70,6 +77,66 @@
                         </div>
                         <div id="tasks-loading" class="text-center text-xl themed-text-secondary hidden">Loading tasks...</div>
                         <ul id="task-list-ul" class="space-y-3"></ul>
+                    </div>
+                    <footer class="page-footer text-center themed-text-secondary text-lg md:text-xl jersey-10-regular mt-20 pt-6 border-t themed-border w-full max-w-4xl mx-auto"></footer>
+                </div>
+
+                <div id="calendar-page" class="page items-center jersey-10-regular">
+                    <div class="w-full max-w-6xl mx-auto themed-bg-primary p-0 md:p-2 rounded-lg">
+                        <h1 class="text-6xl md:text-7xl mt-0 mb-6 text-center tracking-wide themed-text-primary">Task Calendar</h1>
+                        <div id="calendar-controls" class="themed-bg-tertiary p-4 rounded-lg shadow-md mb-6 flex flex-wrap justify-between items-center gap-2">
+                            <div class="flex gap-2">
+                                <button id="calendar-prev-button" class="themed-button-secondary px-4 py-2 text-xl rounded">Prev</button>
+                                <button id="calendar-today-button" class="themed-button-secondary px-4 py-2 text-xl rounded">Today</button>
+                                <button id="calendar-next-button" class="themed-button-secondary px-4 py-2 text-xl rounded">Next</button>
+                            </div>
+                            <div id="calendar-title" class="text-2xl themed-text-primary font-bold order-first md:order-none w-full md:w-auto text-center md:text-left mb-2 md:mb-0">
+                                </div>
+                            <div class="flex gap-2">
+                                <button id="calendar-day-view-button" class="themed-button-secondary px-4 py-2 text-xl rounded">Day</button>
+                                <button id="calendar-week-view-button" class="themed-button-secondary px-4 py-2 text-xl rounded">Week</button>
+                                <button id="calendar-month-view-button" class="themed-button-primary px-4 py-2 text-xl rounded">Month</button>
+                            </div>
+                            <button id="calendar-add-task-button" class="themed-button-primary px-5 py-2 text-xl rounded mt-2 md:mt-0 w-full md:w-auto">Add Task to Calendar</button>
+                        </div>
+                        <div id="calendar-container" class="themed-bg-tertiary p-2 md:p-4 rounded-lg shadow-2xl min-h-[600px]">
+                            </div>
+                    </div>
+                    <footer class="page-footer text-center themed-text-secondary text-lg md:text-xl jersey-10-regular mt-20 pt-6 border-t themed-border w-full max-w-6xl mx-auto"></footer>
+                </div>
+
+
+                <div id="streaks-page" class="page items-center jersey-10-regular">
+                    <div class="w-full max-w-4xl mx-auto themed-bg-primary p-0 md:p-2 rounded-lg">
+                        <h1 class="text-6xl md:text-7xl mt-0 mb-10 text-center tracking-wide themed-text-primary">Weekly Streaks</h1>
+                        <div class="themed-bg-tertiary p-6 md:p-8 rounded-lg shadow-2xl mb-10">
+                            <h2 class="text-3xl md:text-4xl mb-4 tracking-wide themed-text-primary">Score Chart (Current Week)</h2>
+                            <div class="themed-bg-secondary p-2 md:p-4 rounded-md shadow min-h-[250px] md:min-h-[300px] relative"><canvas id="streaksChartCanvas"></canvas></div>
+                        </div>
+                        <div class="themed-bg-tertiary p-6 md:p-8 rounded-lg shadow-2xl">
+                            <h2 class="text-3xl md:text-4xl mb-4 tracking-wide themed-text-primary">Score Details (Current Week)</h2>
+                            <div id="streaksTableContainer" class="overflow-x-auto themed-bg-secondary p-2 md:p-4 rounded-md shadow"><p class="themed-text-secondary text-xl">Loading streak data...</p></div>
+                        </div>
+                    </div>
+                     <footer class="page-footer text-center themed-text-secondary text-lg md:text-xl jersey-10-regular mt-20 pt-6 border-t themed-border w-full max-w-4xl mx-auto"></footer>
+                </div>
+
+                <div id="insights-page" class="page items-center jersey-10-regular">
+                    <div class="w-full max-w-4xl mx-auto themed-bg-primary p-0 md:p-2 rounded-lg">
+                        <h1 class="text-6xl md:text-7xl mt-0 mb-10 text-center tracking-wide themed-text-primary">Productivity Insights</h1>
+                        <div class="themed-bg-tertiary p-6 md:p-8 rounded-lg shadow-2xl mb-10">
+                            <h2 class="text-3xl md:text-4xl mb-4 tracking-wide themed-text-primary">Most Focused Hours (All Time)</h2>
+                            <p id="insights-focused-hours-message" class="themed-text-secondary text-lg mb-4"></p>
+                            <div class="themed-bg-secondary p-2 md:p-4 rounded-md shadow min-h-[250px] md:min-h-[300px] relative">
+                                <canvas id="focusedHoursChartCanvas"></canvas>
+                            </div>
+                        </div>
+                        <div class="themed-bg-tertiary p-6 md:p-8 rounded-lg shadow-2xl">
+                            <h2 class="text-3xl md:text-4xl mb-4 tracking-wide themed-text-primary">Recent Focus Sessions</h2>
+                            <div id="sessionHistoryContainer" class="overflow-x-auto themed-bg-secondary p-2 md:p-4 rounded-md shadow min-h-[200px]">
+                                <p class="themed-text-secondary text-xl">Loading session data...</p>
+                            </div>
+                        </div>
                     </div>
                     <footer class="page-footer text-center themed-text-secondary text-lg md:text-xl jersey-10-regular mt-20 pt-6 border-t themed-border w-full max-w-4xl mx-auto"></footer>
                 </div>
@@ -87,18 +154,16 @@
                                 <div><label for="pomodorosBeforeLongBreak" class="block mb-1">Pomodoros before Long Break:</label><input type="number" name="pomodorosBeforeLongBreak" id="pomodorosBeforeLongBreak" class="w-full p-3 themed-input rounded focus:outline-none border"></div>
                                 <div class="flex items-center mt-4"><input type="checkbox" name="soundNotifications" id="soundNotifications" class="w-6 h-6 mr-3 rounded focus:ring-0 themed-checkbox border themed-border"><label for="soundNotifications">Enable Sound Notifications</label></div>
                                 <div class="flex items-center"><input type="checkbox" name="browserNotifications" id="browserNotifications" class="w-6 h-6 mr-3 rounded focus:ring-0 themed-checkbox border themed-border"><label for="browserNotifications">Enable Browser Notifications</label></div>
-                                
                                 <div class="pt-4 mt-4 border-t themed-border">
                                     <h3 class="text-3xl themed-text-primary mb-3">Distraction Management</h3>
                                     <div class="flex items-center">
-                                        <input type="checkbox" name="enhancedFocusMode" id="enhancedFocusMode" class="w-6 h-6 mr-3 rounded focus:ring-0 themed-checkbox border themed-border">
-                                        <label for="enhancedFocusMode">Enable Enhanced Focus Reminders (Update soon)</label>
+                                        <input type="checkbox" name="enhancedFocusMode" id="enhancedFocusMode" class="w-6 h-6 mr-3 rounded focus:ring-0 themed-checkbox border themed-border" disabled>
+                                        <label for="enhancedFocusMode" class="opacity-50">Enable Enhanced Focus Reminders (Update soon)</label>
                                     </div>
-                                    <p class="text-lg themed-text-secondary mt-2 ml-9">
+                                    <p class="text-lg themed-text-secondary mt-2 ml-9 opacity-50">
                                         When enabled, Focumia will provide guidance on using a separate site-blocking tool (e.g., a browser extension like LeechBlock NG or an app like Freedom) to block distracting websites during focus sessions. Focumia cannot block websites directly.
                                     </p>
                                 </div>
-
                                 <button type="submit" class="mt-8 w-full themed-button-primary py-3 rounded text-2xl">Save Settings</button>
                             </form>
                         </div>
@@ -106,45 +171,33 @@
                     <footer class="page-footer text-center themed-text-secondary text-lg md:text-xl jersey-10-regular mt-20 pt-6 border-t themed-border w-full max-w-4xl mx-auto"></footer>
                 </div>
 
-                <div id="streaks-page" class="page items-center jersey-10-regular">
-                    <div class="w-full max-w-4xl mx-auto themed-bg-primary p-0 md:p-2 rounded-lg">
-                        <h1 class="text-6xl md:text-7xl mt-0 mb-10 text-center tracking-wide themed-text-primary">Weekly Streaks</h1>
-                        <div class="themed-bg-tertiary p-6 md:p-8 rounded-lg shadow-2xl mb-10">
-                            <h2 class="text-3xl md:text-4xl mb-4 tracking-wide themed-text-primary">Score Chart (Current Week)</h2>
-                            <div class="themed-bg-secondary p-2 md:p-4 rounded-md shadow min-h-[250px] md:min-h-[300px] relative"><canvas id="streaksChartCanvas"></canvas></div>
-                        </div>
-                        <div class="themed-bg-tertiary p-6 md:p-8 rounded-lg shadow-2xl">
-                            <h2 class="text-3xl md:text-4xl mb-4 tracking-wide themed-text-primary">Score Details (Current Week)</h2>
-                            <div id="streaksTableContainer" class="overflow-x-auto themed-bg-secondary p-2 md:p-4 rounded-md shadow"><p class="themed-text-secondary text-xl">Loading streak data...</p></div>
-                        </div>
-                    </div>
-                     <footer class="page-footer text-center themed-text-secondary text-lg md:text-xl jersey-10-regular mt-20 pt-6 border-t themed-border w-full max-w-4xl mx-auto"></footer>
-                </div>
-
                 <div id="privacy-policy-page" class="page jersey-10-regular items-center">
                     <div class="w-full max-w-3xl mx-auto themed-bg-tertiary p-6 md:p-8 rounded-lg shadow-2xl">
                         <h1 class="text-5xl md:text-6xl mb-8 text-center tracking-wide themed-text-primary">Privacy Policy</h1>
                         <div class="text-xl md:text-2xl themed-text-primary space-y-4 policy-content">
-                            <p><strong>Last Updated: June 1, 2025</strong></p>
+                            <p><strong>Last Updated: June 2, 2025</strong></p> {/* Updated Date */}
                             <p>Welcome to Focumia! This Privacy Policy explains how we handle your information when you use our application.</p>
                             <h2>1. Information We Collect</h2>
                             <p>Focumia is designed to work entirely on your local device. We collect and store the following information directly in your browser's <code>localStorage</code>:</p>
                             <ul>
-                                <li><strong>Tasks:</strong> The text of your tasks, their completion status, creation dates, and completion dates.</li>
-                                <li><strong>Timer Settings:</strong> Your preferred durations for Pomodoro sessions, short breaks, long breaks, and the number of Pomodoros before a long break. Notification preferences (sound, browser), and Enhanced Focus Mode preference (if you enable it).</li>
+                                <li><strong>Tasks:</strong> The text of your tasks, their completion status, creation dates, completion dates, start dates, due dates, all-day status, descriptions, and deadline notification status.</li>
+                                <li><strong>Timer Settings:</strong> Your preferred durations for Pomodoro sessions, short breaks, long breaks, and the number of Pomodoros before a long break. Notification preferences (sound, browser).</li>
                                 <li><strong>Theme Preference:</strong> Your choice of light or dark theme.</li>
                                 <li><strong>Streak Data:</strong> Aggregated scores for completed tasks and focus sessions, tracked weekly.</li>
+                                <li><strong>Session History:</strong> Records of completed focus sessions, including end time and duration, for productivity insights.</li>
                             </ul>
                             <p><strong>We do not collect, transmit, or store any of this information on any external servers. All data remains on your computer or device. We do not collect any personally identifiable information (PII) such as your name, email address, or IP address.</strong></p>
                             <h2>2. How We Use Your Information</h2>
                             <p>The information stored in your browser's <code>localStorage</code> is used solely to provide the functionality of the Focumia application, including:</p>
                             <ul>
-                                <li>Displaying and managing your tasks.</li>
-                                <li>Operating the Pomodoro timer according to your settings.</li>
+                                <li>Displaying and managing your tasks, including on a calendar view.</li>
+                                <li>Operating the Pomodoro timer according to your settings.
                                 <li>Remembering your theme preference.</li>
                                 <li>Tracking your weekly streaks to help you stay motivated.</li>
+                                <li>Displaying productivity insights based on your session history.</li>
                                 <li>Allowing you to review tasks completed on specific days.</li>
-                                <li>Guiding you on using external tools if Enhanced Focus Mode is enabled.</li>
+                                <li>Allowing export of task data to <code>.ics</code> calendar files.</li>
+                                <li>Providing deadline notifications for tasks.</li>
                             </ul>
                             <h2>3. Data Storage and Security</h2>
                             <p>All your data is stored locally in your web browser's <code>localStorage</code>. The security of this data depends on the security of your browser and device. Focumia itself does not add any extra layers of encryption to this locally stored data beyond what your browser provides.</p>
@@ -154,7 +207,8 @@
                             <ul>
                                 <li><strong>Tailwind CSS (CDN):</strong> For styling the application.</li>
                                 <li><strong>Google Fonts:</strong> For the 'Jersey 10' font.</li>
-                                <li><strong>Chart.js (CDN):</strong> For displaying the streak graph.</li>
+                                <li><strong>Chart.js (CDN):</strong> For displaying graphs (streaks, insights).</li>
+                                <li><strong>FullCalendar (CDN):</strong> For displaying the task calendar.</li>
                                 <li><strong>Mixkit (Audio Asset):</strong> For the notification sound.</li>
                             </ul>
                             <p>These services are loaded from Content Delivery Networks (CDNs) or directly linked. They may have their own privacy and cookie policies, and we encourage you to review them. Focumia does not directly share your application data (tasks, settings, etc.) with these third-party services.</p>
@@ -180,18 +234,19 @@
                     <div class="w-full max-w-3xl mx-auto themed-bg-tertiary p-6 md:p-8 rounded-lg shadow-2xl">
                         <h1 class="text-5xl md:text-6xl mb-8 text-center tracking-wide themed-text-primary">Cookie Policy</h1>
                         <div class="text-xl md:text-2xl themed-text-primary space-y-4 policy-content">
-                            <p><strong>Last Updated: June 1, 2025</strong></p>
+                            <p><strong>Last Updated: June 2, 2025</strong></p> {/* Updated Date */}
                             <h2>1. What Are Cookies?</h2>
                             <p>Cookies are small text files that are stored on your computer or mobile device when you visit a website. They are widely used to make websites work, or work more efficiently, as well as to provide information to the owners of the site.</p>
                             <h2>2. Does Focumia Use Cookies?</h2>
                             <p>Focumia itself <strong>does not directly set or use HTTP cookies</strong> to store your personal information or track your activity across different websites.</p>
-                            <p>Instead, Focumia primarily utilizes your web browser's <strong><code>localStorage</code></strong>. <code>localStorage</code> allows web applications like Focumia to store data (such as your tasks, settings, theme preference, and streak data) directly within your browser on your device. This data persists even after you close the browser window, enabling the app to remember your information for your next session. This is done to provide the core functionality of the application and to save your preferences locally.</p>
+                            <p>Instead, Focumia primarily utilizes your web browser's <strong><code>localStorage</code></strong>. <code>localStorage</code> allows web applications like Focumia to store data (such as your tasks, settings, theme preference, streak data, and session history) directly within your browser on your device. This data persists even after you close the browser window, enabling the app to remember your information for your next session. This is done to provide the core functionality of the application and to save your preferences locally.</p>
                             <h2>3. Third-Party Services and Potential Cookies</h2>
                             <p>While Focumia does not set its own cookies, it uses some third-party services which might set cookies or use similar technologies. These include:</p>
                             <ul>
                                 <li><strong>Tailwind CSS (CDN)</strong></li>
                                 <li><strong>Google Fonts</strong></li>
                                 <li><strong>Chart.js (CDN)</strong></li>
+                                <li><strong>FullCalendar (CDN)</strong></li>
                                 <li><strong>Mixkit (Audio Asset Host)</strong></li>
                             </ul>
                             <p>These services are loaded from external sources (Content Delivery Networks or asset hosts) and may set their own cookies for purposes such as analytics, performance, or functionality. We do not control the setting of these cookies. We recommend you check the respective privacy and cookie policies of these third-party providers for more information about their practices.</p>
@@ -212,6 +267,46 @@
 
             </main>
         </div>
+
+        <div id="calendar-task-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-[70] jersey-10-regular">
+            <div class="themed-bg-primary p-6 md:p-8 rounded-lg shadow-2xl w-full max-w-lg">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 id="calendar-task-modal-title" class="text-4xl themed-text-primary">Add Task</h2>
+                    <button id="calendar-task-modal-close-button" class="themed-text-primary hover:themed-text-secondary text-4xl leading-none p-1">&times;</button>
+                </div>
+                <form id="calendar-task-form" class="space-y-4 text-xl md:text-2xl">
+                    <input type="hidden" id="calendar-task-id">
+                    <div>
+                        <label for="calendar-task-text" class="block mb-1 themed-text-secondary">Task:</label>
+                        <input type="text" id="calendar-task-text" class="w-full p-3 themed-input rounded focus:outline-none border" required>
+                    </div>
+                    <div>
+                        <label for="calendar-task-description" class="block mb-1 themed-text-secondary">Description (Optional):</label>
+                        <textarea id="calendar-task-description" rows="3" class="w-full p-3 themed-input rounded focus:outline-none border"></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="calendar-task-start-date" class="block mb-1 themed-text-secondary">Start Date/Time:</label>
+                            <input type="datetime-local" id="calendar-task-start-date" class="w-full p-3 themed-input rounded focus:outline-none border">
+                        </div>
+                        <div>
+                            <label for="calendar-task-due-date" class="block mb-1 themed-text-secondary">Due Date / Deadline:</label>
+                            <input type="datetime-local" id="calendar-task-due-date" class="w-full p-3 themed-input rounded focus:outline-none border">
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="calendar-task-all-day" class="w-6 h-6 mr-3 rounded focus:ring-0 themed-checkbox border themed-border">
+                        <label for="calendar-task-all-day" class="themed-text-secondary">All-day task</label>
+                    </div>
+                    <div class="pt-4 flex flex-col sm:flex-row gap-3">
+                        <button type="submit" id="calendar-task-save-button" class="themed-button-primary w-full sm:w-auto px-6 py-3 rounded text-2xl">Save Task</button>
+                        <button type="button" id="calendar-task-delete-button" class="themed-button-secondary text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 w-full sm:w-auto px-6 py-3 rounded text-2xl hidden">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
         <audio id="notification-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-clear-announce-tones-2861.mp3" preload="auto"></audio>
     </div>
     <script type="module" src="script.js"></script>
